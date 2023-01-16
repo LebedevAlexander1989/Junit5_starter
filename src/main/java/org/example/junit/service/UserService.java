@@ -1,6 +1,6 @@
-package org.example.jUnit.service;
+package org.example.junit.service;
 
-import org.example.jUnit.dto.User;
+import org.example.junit.dto.User;
 
 import java.util.Collections;
 import java.util.List;

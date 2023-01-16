@@ -1,4 +1,4 @@
-package org.example.jUnit.service;
+package org.example.junit.service;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UserServiceTest {
 
     @Test
-    void test() {
+    void usersEmptyIfNotUserAdded() {
         var userService = new UserService();
         var users = userService.getAll();
-        assertTrue(users.isEmpty(), () -> "Users empty should be empty");
+        assertTrue(users.isEmpty(), "Users empty should be empty");
     }
 }
