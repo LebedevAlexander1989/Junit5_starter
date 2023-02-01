@@ -4,6 +4,7 @@ import org.example.junit.dto.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserService {
 
@@ -15,5 +16,13 @@ public class UserService {
 
     public void add(User user) {
         users.add(user);
+    }
+
+    public Optional<User> login(String name, String password) {
+            return users
+                    .stream()
+                    .filter(user -> user.getName().equals(name))
+                    .filter(user -> user.getPassword().equals(password))
+                    .findFirst();
     }
 }
