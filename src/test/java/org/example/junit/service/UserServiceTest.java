@@ -1,12 +1,15 @@
 package org.example.junit.service;
 
 import org.example.junit.dto.User;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 
+import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class UserServiceTest {
@@ -31,7 +34,8 @@ class UserServiceTest {
     void usersEmptyIfNotUserAdded() {
         System.out.println("Test 1: " + this);
         var users = userService.getAll();
-        assertTrue(users.isEmpty(), "Users empty should be empty");
+    //    assertTrue(users.isEmpty(), "Users empty should be empty");
+        assertThat(users).hasSize(0);
     }
 
     @Test
@@ -41,7 +45,8 @@ class UserServiceTest {
         userService.add(PETR);
 
         var users = userService.getAll();
-        assertEquals(2, users.size());
+      //  assertEquals(2, users.size());
+        assertThat(users).hasSize(2);
     }
 
     @Test
@@ -50,8 +55,10 @@ class UserServiceTest {
         userService.add(IVAN);
 
         Optional<User> mayBeUser = userService.login(IVAN.getName(), IVAN.getPassword());
-        assertTrue(mayBeUser.isPresent());
-        assertEquals(IVAN, mayBeUser.get());
+       // assertTrue(mayBeUser.isPresent());
+      //  assertEquals(IVAN, mayBeUser.get());
+        assertThat(mayBeUser).isPresent();
+        assertThat(mayBeUser.get()).isEqualTo(IVAN);
     }
 
     @Test
@@ -60,7 +67,8 @@ class UserServiceTest {
         userService.add(PETR);
 
         Optional<User> mayBeUser = userService.login(PETR.getName(), "123");
-        assertTrue(mayBeUser.isEmpty());
+       // assertTrue(mayBeUser.isEmpty());
+        assertThat(mayBeUser).isEmpty();
     }
 
     @Test
@@ -69,7 +77,21 @@ class UserServiceTest {
         userService.add(PETR);
 
         Optional<User> mayBeUser = userService.login("ptr", PETR.getPassword());
-        assertTrue(mayBeUser.isEmpty());
+       // assertTrue(mayBeUser.isEmpty());
+        assertThat(mayBeUser).isEmpty();
+    }
+
+    @Test
+    void usersConvertedToMapById() {
+        System.out.println("Test 6: " + this);
+        userService.add(IVAN, PETR);
+        Map<Integer, User> users = userService.getALLConvertedById();
+
+        MatcherAssert.assertThat(users, hasKey(IVAN.getId()));
+        assertAll(
+                () -> assertThat(users).containsKeys(IVAN.getId(), PETR.getId()),
+                () -> assertThat(users).containsValues(IVAN, PETR)
+        );
     }
 
     @AfterEach
