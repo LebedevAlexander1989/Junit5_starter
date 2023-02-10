@@ -1,6 +1,7 @@
 package org.example.junit.service;
 
 import org.junit.platform.engine.discovery.DiscoverySelectors;
+import org.junit.platform.launcher.TagFilter;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -17,6 +18,9 @@ public class TestLauncher {
         var request = LauncherDiscoveryRequestBuilder
                 .request()
                 .selectors(DiscoverySelectors.selectPackage("org.example.junit.service"))
+                .filters(
+                        TagFilter.includeTags("login")
+                )
                 .build();
 
         launcher.execute(request, summaryGeneratingListener);

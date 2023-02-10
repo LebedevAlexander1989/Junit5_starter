@@ -49,6 +49,7 @@ class UserServiceTest {
     }
 
     @Test
+    @Tag("login")
     void loginSuccessIfUserExist() {
         System.out.println("Test 3: " + this);
         userService.add(IVAN);
@@ -59,6 +60,7 @@ class UserServiceTest {
     }
 
     @Test
+    @Tag("login")
     void loginFailIfPasswordIsNotCorrect() {
         System.out.println("Test 4: " + this);
         userService.add(PETR);
@@ -68,6 +70,7 @@ class UserServiceTest {
     }
 
     @Test
+    @Tag("login")
     void loginFailIfUserDoesNotExists() {
         System.out.println("Test 5: " + this);
         userService.add(PETR);
