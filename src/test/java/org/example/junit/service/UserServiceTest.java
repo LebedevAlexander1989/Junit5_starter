@@ -10,6 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class UserServiceTest {
@@ -34,7 +35,6 @@ class UserServiceTest {
     void usersEmptyIfNotUserAdded() {
         System.out.println("Test 1: " + this);
         var users = userService.getAll();
-    //    assertTrue(users.isEmpty(), "Users empty should be empty");
         assertThat(users).hasSize(0);
     }
 
@@ -45,7 +45,6 @@ class UserServiceTest {
         userService.add(PETR);
 
         var users = userService.getAll();
-      //  assertEquals(2, users.size());
         assertThat(users).hasSize(2);
     }
 
@@ -55,8 +54,6 @@ class UserServiceTest {
         userService.add(IVAN);
 
         Optional<User> mayBeUser = userService.login(IVAN.getName(), IVAN.getPassword());
-       // assertTrue(mayBeUser.isPresent());
-      //  assertEquals(IVAN, mayBeUser.get());
         assertThat(mayBeUser).isPresent();
         assertThat(mayBeUser.get()).isEqualTo(IVAN);
     }
@@ -67,7 +64,6 @@ class UserServiceTest {
         userService.add(PETR);
 
         Optional<User> mayBeUser = userService.login(PETR.getName(), "123");
-       // assertTrue(mayBeUser.isEmpty());
         assertThat(mayBeUser).isEmpty();
     }
 
@@ -77,7 +73,6 @@ class UserServiceTest {
         userService.add(PETR);
 
         Optional<User> mayBeUser = userService.login("ptr", PETR.getPassword());
-       // assertTrue(mayBeUser.isEmpty());
         assertThat(mayBeUser).isEmpty();
     }
 
@@ -91,6 +86,15 @@ class UserServiceTest {
         assertAll(
                 () -> assertThat(users).containsKeys(IVAN.getId(), PETR.getId()),
                 () -> assertThat(users).containsValues(IVAN, PETR)
+        );
+    }
+
+    @Test
+    void throwExceptionIfNameOrPasswordIsNull() {
+        System.out.println("Test 7: " + this);
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () ->  userService.login(null, "123")),
+                () -> assertThrows(IllegalArgumentException.class, () ->  userService.login(IVAN.getName(), null))
         );
     }
 

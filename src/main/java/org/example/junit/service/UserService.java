@@ -20,11 +20,15 @@ public class UserService {
     }
 
     public Optional<User> login(String name, String password) {
-            return users
-                    .stream()
-                    .filter(user -> user.getName().equals(name))
-                    .filter(user -> user.getPassword().equals(password))
-                    .findFirst();
+        if (name == null || password == null) {
+            throw new IllegalArgumentException("Name or password is null!");
+        }
+
+        return users
+                .stream()
+                .filter(user -> user.getName().equals(name))
+                .filter(user -> user.getPassword().equals(password))
+                .findFirst();
     }
 
     public Map<Integer, User> getALLConvertedById() {
