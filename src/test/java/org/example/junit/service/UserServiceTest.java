@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+//@TestMethodOrder(MethodOrderer.DisplayName.class)
 class UserServiceTest {
 
     private static final User IVAN = User.of(1, "Ivan", "123");
@@ -49,37 +50,6 @@ class UserServiceTest {
     }
 
     @Test
-    @Tag("login")
-    void loginSuccessIfUserExist() {
-        System.out.println("Test 3: " + this);
-        userService.add(IVAN);
-
-        Optional<User> mayBeUser = userService.login(IVAN.getName(), IVAN.getPassword());
-        assertThat(mayBeUser).isPresent();
-        assertThat(mayBeUser.get()).isEqualTo(IVAN);
-    }
-
-    @Test
-    @Tag("login")
-    void loginFailIfPasswordIsNotCorrect() {
-        System.out.println("Test 4: " + this);
-        userService.add(PETR);
-
-        Optional<User> mayBeUser = userService.login(PETR.getName(), "123");
-        assertThat(mayBeUser).isEmpty();
-    }
-
-    @Test
-    @Tag("login")
-    void loginFailIfUserDoesNotExists() {
-        System.out.println("Test 5: " + this);
-        userService.add(PETR);
-
-        Optional<User> mayBeUser = userService.login("ptr", PETR.getPassword());
-        assertThat(mayBeUser).isEmpty();
-    }
-
-    @Test
     void usersConvertedToMapById() {
         System.out.println("Test 6: " + this);
         userService.add(IVAN, PETR);
@@ -109,5 +79,42 @@ class UserServiceTest {
     @AfterAll
     static void closeConnectionPool() {
         System.out.println("After all: ");
+    }
+
+    @DisplayName("test user login functionality")
+    @Nested
+    @Tag("login")
+    class LoginTest {
+        @Test
+        @Tag("login")
+        @DisplayName("Login success if user exist")
+        void loginSuccessIfUserExist() {
+            System.out.println("Test 3: " + this);
+            userService.add(IVAN);
+
+            Optional<User> mayBeUser = userService.login(IVAN.getName(), IVAN.getPassword());
+            assertThat(mayBeUser).isPresent();
+            assertThat(mayBeUser.get()).isEqualTo(IVAN);
+        }
+
+        @Test
+        @Tag("login")
+        void loginFailIfPasswordIsNotCorrect() {
+            System.out.println("Test 4: " + this);
+            userService.add(PETR);
+
+            Optional<User> mayBeUser = userService.login(PETR.getName(), "123");
+            assertThat(mayBeUser).isEmpty();
+        }
+
+        @Test
+        @Tag("login")
+        void loginFailIfUserDoesNotExists() {
+            System.out.println("Test 5: " + this);
+            userService.add(PETR);
+
+            Optional<User> mayBeUser = userService.login("ptr", PETR.getPassword());
+            assertThat(mayBeUser).isEmpty();
+        }
     }
 }
