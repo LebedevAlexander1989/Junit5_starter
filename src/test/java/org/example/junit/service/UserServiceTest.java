@@ -1,8 +1,10 @@
 package org.example.junit.service;
 
 import org.example.junit.dto.User;
+import org.example.junit.paramresolver.UserServiceParamResolver;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-//@TestMethodOrder(MethodOrderer.DisplayName.class)
+@ExtendWith(UserServiceParamResolver.class)
 class UserServiceTest {
 
     private static final User IVAN = User.of(1, "Ivan", "123");
@@ -27,9 +29,9 @@ class UserServiceTest {
     }
 
     @BeforeEach
-    void prepare() {
-        userService = new UserService();
+    void prepare(UserService userService) {
         System.out.println("Before each: " + this);
+        this.userService = userService;
     }
 
     @Test
