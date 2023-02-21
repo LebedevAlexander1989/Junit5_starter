@@ -9,14 +9,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @ExtendWith(UserServiceParamResolver.class)
@@ -103,7 +103,9 @@ class UserServiceTest {
             assertThat(mayBeUser.get()).isEqualTo(IVAN);
         }
 
-        @Test
+        // @Test
+        //@Disabled(value = "flaky, need to see")
+        @RepeatedTest(value = 5, name = RepeatedTest.LONG_DISPLAY_NAME)
         @Tag("login")
         void loginFailIfPasswordIsNotCorrect() {
             System.out.println("Test 4: " + this);
@@ -111,6 +113,15 @@ class UserServiceTest {
 
             Optional<User> mayBeUser = userService.login(PETR.getName(), "123");
             assertThat(mayBeUser).isEmpty();
+        }
+
+        @Test
+        void checkLoginFunctionalityPerformance() {
+            assertTimeout(Duration.ofMillis(200L), () -> {
+                Thread.sleep(100L);
+                userService.login(PETR.getName(), "123");
+            });
+
         }
 
         @Test
@@ -138,8 +149,8 @@ class UserServiceTest {
 
     static Stream<Arguments> getArgumentsForLoginTest() {
         return Stream.of(
-            Arguments.of("Ivan", "123", Optional.of(IVAN)),
-            Arguments.of("Petr", "345", Optional.of(PETR)),
+                Arguments.of("Ivan", "123", Optional.of(IVAN)),
+                Arguments.of("Petr", "345", Optional.of(PETR)),
                 Arguments.of("Petr", "dummy", Optional.empty()),
                 Arguments.of("dummy", "123", Optional.empty())
         );
